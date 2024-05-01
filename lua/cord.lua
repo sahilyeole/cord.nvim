@@ -333,7 +333,7 @@ function cord.setup_usercmds(config)
   -- call this in init.lua on autocmd TextChanged
 	vim.api.nvim_create_user_command("CordUpdate", function()
 		if force_idle then
-			update_presence(config, true)
+			start_timer(config)
 		end
 	end, {})
 end
