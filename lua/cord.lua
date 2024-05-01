@@ -131,16 +131,12 @@ local function update_idle_presence(config)
     if config.display.show_time and config.timer.reset_on_idle then
       discord.update_time()
     end
-    discord.update_presence(
-      ffi.new(
-        'PresenceArgs',
-        '',
-        'Cord.idle',
-        0,
-        nil,
-        false
-      )
-    )
+		timer:stop()
+		discord.clear_presence()
+		enabled = false
+		last_presence = nil
+		force_idle = true
+		vim.notify("[cord.nvim] Discord presence stopped", vim.log.levels.WARN)
     return true
   end
   return false
@@ -333,6 +329,16 @@ function cord.setup_usercmds(config)
     last_updated = os.clock()
     last_presence = nil
   end, {})
+
+	vim.api.nvim_create_user_command("CordCheckLoop", function()
+		if force_idle then
+			vim.api.nvim_create_autocmd("TextChanged", {
+				callback = function()
+					update_presence(config, true)
+				end,
+			})
+		end
+	end, {})
 end
 
 return cord
