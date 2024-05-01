@@ -330,13 +330,10 @@ function cord.setup_usercmds(config)
     last_presence = nil
   end, {})
 
-	vim.api.nvim_create_user_command("CordCheckLoop", function()
+  -- call this in init.lua on autocmd TextChanged
+	vim.api.nvim_create_user_command("CordUpdate", function()
 		if force_idle then
-			vim.api.nvim_create_autocmd("TextChanged", {
-				callback = function()
-					update_presence(config, true)
-				end,
-			})
+			update_presence(config, true)
 		end
 	end, {})
 end
